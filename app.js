@@ -4,15 +4,23 @@ const firebase = require("firebase-admin");
 
 require('dotenv').config()
 
+firebase.initializeApp({
+  credential: firebase.credential.cert(require(process.env.GOOGLE_APPLICATION_CREDENTIALS)),
+  storageBucket: process.env.STORAGE_BUCKET
+});
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-var auth = require('./src/middlewares/auth')
-
 app.use(express.json()); 
-app.use(auth);
 app.use(morgan("dev"));
- 
+
+var routes = require('./src/routes/api');
+
+app.use('/api', routes);
+
+app.use('/static', express.static(process.env.LOCAL_DATA_STORAGE_PATH))
+
 app.get("/ping", (req, res) => {  
   return res.send({
     status: "Healthy",

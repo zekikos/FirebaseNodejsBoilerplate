@@ -2,7 +2,7 @@ var firebase = require("firebase-admin");
 var auth = function(req, res, next){
 	var header = req.headers['authorization'];
 	//console.log(req.headers)
-	if (!(typeof header === 'string' || header instanceof String)){ next();/*res.sendStatus(400);*/ } else {
+	if (!(typeof header === 'string' || header instanceof String)){ /*next();*/res.sendStatus(401); } else {
 		header = header.replace("Bearer ", "");
 		firebase.auth().verifyIdToken(header)
 		.then((decodedToken) => {
